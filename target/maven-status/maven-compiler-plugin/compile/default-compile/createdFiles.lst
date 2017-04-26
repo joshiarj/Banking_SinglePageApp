@@ -1,0 +1,8 @@
+com\arj\bankingapp\api\LoginAPI.class
+com\arj\bankingapp\entity\User.class
+com\arj\bankingapp\api\UserAPI.class
+com\arj\bankingapp\api\ApplicationConfig.class
+com\arj\bankingapp\dao\UserDAO.class
+com\arj\bankingapp\api\GenericAPI.class
+com\arj\bankingapp\dao\impl\UserDAOImpl.class
+com\arj\bankingapp\entity\User_.class

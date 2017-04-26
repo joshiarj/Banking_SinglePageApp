@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Banking App</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script>
+            var accessToken = "";
+        </script>
+    </head>
+    <body>
+        <div id="container">
+            <a href="http://localhost:8080/AJV_07_BankingApp/">Refresh this Page</a>
+            <a href="javascript:void(0)" id="link-login">Log In</a>
+            <a href="javascript:void(0)" id="link-signup">Sign Up</a>
+            <a href="javascript:void(0)" id="link-logout" style="display: none">Log Out</a>
+            <div id="message"></div>
+            <div id="signup-block" style="display: none">
+                <h2>Sign Up</h2>
+                <div id="signup-msg"></div>
+                <form id="form-signup">
+                    <div>
+                        <label>Username:</label>
+                        <input type="text" name="signup_username" id="signup_username" required="required" />
+                    </div>
+                    <div>
+                        <label>Password:</label>
+                        <input type="password" name="signup_password" id="signup_password" required="required" />
+                    </div>
+                    <div>
+                        <label>Retype Password:</label>
+                        <input type="password" name="signup_rePassword" id="signup_rePassword" required="required" />
+                    </div>
+                    <div>
+                        <label>Email:</label>
+                        <input type="email" name="signup_email" id="signup_email" required="required" />
+                    </div>
+                    <button type="submit" id="btn-signup">Sign Up</button>
+                </form>
+            </div>
+            <div id="login-block" style="display: none">
+                <h2>Login</h2>
+                <div id="login-error" style="color:red"></div>
+                <form id="form-login">
+                    <div>
+                        <label>Username: </label>
+                        <input type="text" name="login_username" id="login_username"/>
+                    </div>
+                    <div>
+                        <label>Password: </label>
+                        <input type="password" name="login_password" id="login_password"/>
+                    </div>
+                    <button type="submit" id="btn-login">Log In</button>
+                </form>
+            </div>
+            <div id="dashboard">
+                <h2></h2>
+            </div>
+        </div>
+
+        <script>
+            $(document).on('ready', function () {
+                $("#link-login").on('click', function () {
+                    $("#signup-block").hide();
+                    $("#login-block").show();
+                });
+                
+                $("#link-signup").on('click', function () {
+                    $("#login-block").hide();
+                    $("#signup-block").show();
+                });
+
+                $("#btn-signup").on('click', function () {
+                    $.post("api/user/signup", $("#form-signup").serialize(), function (data) {
+                        if (data === "success") {
+                            $("#signup-block").hide();
+                            $("#login-block").show();
+                        } else {
+                            $("#signup-msg").html("Error signing up!");
+                        }
+                    });
+                    return false;
+                });
+
+                $("#btn-login").on('click', function () {
+                    $.post("api/user/login", $("#form-login").serialize(), function (data) {
+                        if (data !== "error") {
+                            accessToken = data;
+                            $("#login-block").hide();
+                            $("#link-login").hide();
+                            $("#link-signup").hide();
+                            $("#link-logout").show();
+                            $("#message").html("Access Token: "+accessToken);
+                        } else {
+                            $("#login-block #login-error").html("ERROR! Invalid username/password.");
+                        }
+                    });
+                    return false;
+                });
+
+                $("#link-logout").on('click', function () {
+                    $.get("api/user/logout", "accessToken="+accessToken, function (data) {
+                        if (data === "loggedout") {
+                            accessToken = "";
+                            $("#link-login").show();
+                            $("#link-signup").show();
+                            $("#link-logout").hide();
+                            $("#message").html("");
+                        } else {
+                            $("#login-block #login-error").html("ERROR! Invalid username/password.");
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
